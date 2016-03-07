@@ -67,3 +67,28 @@ def parse_ftuple(s,length=2,scale=1):
         raise ValueError("{} does not match \"{}\".".format(s,rx));
     return [x*scale for x in eval(s)];
 
+
+def sd(d,**kw):
+    '''
+    A hack to return a modified dict dynamically. Basically,
+    Does "classless OOP" as in js but with dicts, although
+    not really for the "verb" parts of OOP but more of the
+    "subject" stuff.
+
+    Confused? Here's how it works:
+
+    `d` is a dict. We have that
+
+    sd(d, perfect=42, gf='qt3.14')
+
+    returns a dict like d but with d['perfect']==42 and
+    d['gf']=='qt3.14'. 'sd' stands for "setdefault" which is,
+    you know, what we do when we set elements of a dict.
+    
+    I plan to  use this heavily.
+    '''
+    #HURR SO COMPLICATED
+    r={};        #copy. if you want to modify,
+    r.update(d); #use {}.update
+    r.update(kw);
+    return r;
