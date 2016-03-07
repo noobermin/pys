@@ -1,7 +1,7 @@
 pys
 ===
 
-Miscellaneous pythons.
+Miscellaneous pythons 🐍
 
 Install
 -------
