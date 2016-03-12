@@ -92,3 +92,18 @@ def sd(d,**kw):
     r.update(d); #use {}.update
     r.update(kw);
     return r;
+
+def savetxt(fname, s=""):
+    '''write to a text file'''
+    with open(fname,"w") as f:
+        f.write(s);
+
+def readtxt(fname):
+    '''read a text file'''
+    with open(fname,"r") as f:
+        s = f.read();
+    return s;
+
+def take(d,l):
+    '''take a list of keys from a dict'''
+    return {i:d[i] for i in l};
