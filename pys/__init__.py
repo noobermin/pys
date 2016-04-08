@@ -59,14 +59,37 @@ def filelines(fname,strip=False):
 
 fltrx_s=r"[-+]{0,1}\d+\.{0,1}\d*(?:[eE][-+]{0,1}\d+){0,1}";
 fltrx=re.compile(fltrx_s);
-
-def parse_ftuple(s,length=2,scale=1):
-    '''parse a string into a list of floats'''
-    rx = r"\( *"+' *, *'.join([fltrx_s]*length)+r" *\)";
+intrx_s=r"[-+]{0,1}\d+";
+intrx=re.compile(intrx_s);
+def parse_numtuple(s,intype,length=2,scale=1):
+    '''parse a string into a list of numbers of a type'''
+    if intype == int:
+        numrx = intrx_s;
+    elif intype == float:
+        numrx = fltrx_s;
+    else:
+        raise NotImplementedError("Not implemented for type: {}".format(
+            intype));
+        
+    if length < 1:
+        raise ValueError("invalid length: {}".format(length));
+    if length == 1:
+        rx = r"\( *{numrx} *,{{0,1}} *\)".format(numrx=numrx);
+    else:
+        rx = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
+            rep1=length-1,
+            numrx=numrx);
     if re.match(rx,s) is None:
         raise ValueError("{} does not match \"{}\".".format(s,rx));
     return [x*scale for x in eval(s)];
 
+def parse_ftuple(s,length=2,scale=1):
+    '''parse a string into a list of floats'''
+    return parse_numtuple(s,float,length,scale);
+
+def parse_ituple(s,length=2,scale=1):
+    '''parse a string into a list of floats'''
+    return parse_numtuple(s,int,length,scale);
 
 def sd(d,**kw):
     '''
