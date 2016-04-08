@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pys',
-      version='0.0.3',
+      version='0.0.3r1',
       description='Miscellaneous Pythons',
       url='http://github.com/noobermin/pys',
       author='noobermin',

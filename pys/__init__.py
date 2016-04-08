@@ -71,10 +71,13 @@ def parse_numtuple(s,intype,length=2,scale=1):
         raise NotImplementedError("Not implemented for type: {}".format(
             intype));
         
-    if length < 1:
+    if length is not None and length < 1:
         raise ValueError("invalid length: {}".format(length));
     if length == 1:
         rx = r"\( *{numrx} *,{{0,1}} *\)".format(numrx=numrx);
+    elif length is None:
+        rx = r"\( *(?:{numrx} *, *)*{numrx} *,{{0,1}} *\)".format(
+            numrx=numrx);
     else:
         rx = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
             rep1=length-1,
