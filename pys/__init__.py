@@ -19,8 +19,9 @@ def conv(arg,default=None,func=None):
         return arg if arg else default;
 
 def test(d,k):
-    '''short for "k in d and d[k]'''
-    return k in d and d[k];
+    '''short for `k in d and d[k]', returns None otherwise.'''
+    if k in d and d[k]:
+        return True;
 
 def dump_pickle(name, obj):
     '''quick pickle dump similar to np.save'''
