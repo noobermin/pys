@@ -134,3 +134,7 @@ def readtxt(fname):
 def take(d,l):
     '''take a list of keys from a dict'''
     return {i:d[i] for i in l};
+def takef(d,l,val=None):
+    '''take(f) a list of keys and fill in others with val'''
+    return {i:(d[i] if i in d else val)
+            for i in l};
