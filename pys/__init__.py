@@ -138,3 +138,24 @@ def takef(d,l,val=None):
     '''take(f) a list of keys and fill in others with val'''
     return {i:(d[i] if i in d else val)
             for i in l};
+
+def mk_getkw(kw, defaults):
+    '''
+    a helper for generating a function for reading keywords in
+    interface functions with a dictionary with defaults
+
+    expects the defaults dictionary to have keywords you request.
+
+    example:
+    defaults = dict(a='a',b=3);
+    def bigfunc(**kw):
+        getkw=mk_getkw(kw,defaults);
+
+        # I want the callers' `a', or the default if s/he doesn't
+        # supply it
+        a=getkw('a');
+        c = [a]*getkw('b');
+        return c,c[0]; 
+    '''
+    return  lambda l: kw[l] if test(kw,l) else defaults[l]
+
