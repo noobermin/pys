@@ -135,9 +135,9 @@ def take(d,l):
     '''take a list of keys from a dict'''
     return {i:d[i] for i in l};
 
-def takel(d,l):
-    '''destructure a list (like take, but return a list)'''
-    return take(d,l).values();
+def destr(d,l):
+    '''destructure a dict (like take, but return a list)'''
+    return [d[i] for i in l];
 
 def takef(d,l,val=None):
     '''take(f) a list of keys and fill in others with val'''
