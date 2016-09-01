@@ -163,7 +163,8 @@ def mk_getkw(kw, defaults):
         return c,c[0]; 
     '''
     def getkw(*ls):
-        r = [ kw[l] if test(kw,l) else defaults[l] ];
+        r = [ kw[l] if test(kw,l) else defaults[l]
+              for l in ls ];
         if len(r) == 1: return r[0];
         return r;
     return getkw;
