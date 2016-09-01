@@ -20,7 +20,7 @@ def conv(arg,default=None,func=None):
 
 def test(d,k):
     '''short for `k in d and d[k]', returns None otherwise.'''
-    if k in d and d[k]:
+    if k in d and (d[k] != False or d[k] is not None):
         return True;
 
 def dump_pickle(name, obj):
@@ -162,5 +162,11 @@ def mk_getkw(kw, defaults):
         c = [a]*getkw('b');
         return c,c[0]; 
     '''
-    return  lambda l: kw[l] if test(kw,l) else defaults[l]
+    def getkw(*ls):
+        r = [ kw[l] if test(kw,l) else defaults[l] ];
+        if len(r) == 1: return r[0];
+        return r;
+    return getkw;
+
+            
 
