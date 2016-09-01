@@ -20,7 +20,7 @@ def conv(arg,default=None,func=None):
 
 def test(d,k):
     '''short for `k in d and d[k]', returns None otherwise.'''
-    if k in d and (d[k] != False or d[k] is not None):
+    if k in d and (d[k] is not False or d[k] is not None):
         return True;
 
 def dump_pickle(name, obj):
