@@ -2,6 +2,10 @@
 pys -- pythons
 '''
 import re;
+try:
+    import cPickle as pickle;
+except ImportError:
+    import pickle;
 
 def conv(arg,default=None,func=None):
     '''
