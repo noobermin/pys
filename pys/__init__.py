@@ -33,7 +33,7 @@ def dump_pickle(name, obj):
         pickle.dump(obj,f,2);
     pass;
 
-def load_pickle(name, obj):
+def load_pickle(name):
     '''quick pickle load similar to np.load'''
     with open(name,"rb") as f:
         return pickle.load(f);
