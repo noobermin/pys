@@ -33,6 +33,12 @@ def dump_pickle(name, obj):
         pickle.dump(obj,f,2);
     pass;
 
+def load_pickle(name, obj):
+    '''quick pickle load similar to np.load'''
+    with open(name,"rb") as f:
+        return pickle.load(f);
+    pass;
+
 def chunks(l,n):
     '''chunk l in n sized bits'''
     #http://stackoverflow.com/a/3226719
