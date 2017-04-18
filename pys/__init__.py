@@ -160,7 +160,7 @@ def takef(d,l,val=None):
     return {i:(d[i] if i in d else val)
             for i in l};
 
-def mk_getkw(kw, defaults):
+def mk_getkw(kw, defaults,prefer_passed=False):
     '''
     a helper for generating a function for reading keywords in
     interface functions with a dictionary with defaults
@@ -177,13 +177,21 @@ def mk_getkw(kw, defaults):
         a=getkw('a');
         c = [a]*getkw('b');
         return c,c[0]; 
+
+    Option:
+        prefer_passed -- use "l in kw" only, not test.
     '''
     def getkw(*ls):
         r = [ kw[l] if test(kw,l) else defaults[l]
               for l in ls ];
         if len(r) == 1: return r[0];
         return r;
-    return getkw;
+    def getkw_prefer_passed(*ls):
+        r = [ kw[l] if l in kw else defaults[l]
+              for l in ls ];
+        if len(r) == 1: return r[0];
+        return r;
+    return getkw if not prefer_passed else getkw_prefer_passed;
 
             
 
