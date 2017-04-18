@@ -27,6 +27,12 @@ def test(d,k):
     if k in d and (d[k] is not False and d[k] is not None):
         return True;
 
+def testN(d,k):
+    '''short for `k in d and d[k] is not None', returns None otherwise.'''
+    if k in d and (d[k] is not None):
+        return True;
+
+
 def dump_pickle(name, obj):
     '''quick pickle dump similar to np.save'''
     with open(name,"wb") as f:
