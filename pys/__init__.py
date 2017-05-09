@@ -138,12 +138,12 @@ def sd(d,**kw):
 
 def savetxt(fname, s=""):
     '''write to a text file'''
-    with open(fname,"w") as f:
+    with open(fname,"wb") as f:
         f.write(s);
 
 def readtxt(fname):
     '''read a text file'''
-    with open(fname,"r") as f:
+    with open(fname,"rb") as f:
         s = f.read();
     return s;
 
