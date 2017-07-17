@@ -78,6 +78,23 @@ fltrx_s=r"[-+]{0,1}\d+\.{0,1}\d*(?:[eE][-+]{0,1}\d+){0,1}";
 fltrx=re.compile(fltrx_s);
 intrx_s=r"[-+]{0,1}\d+";
 intrx=re.compile(intrx_s);
+srx_s = r'[0-9]*[a-zA-Z_]+[\w ]*';
+srx=re.compile(srx_s);
+
+def parse_utuple(s,urx,length=2):
+    '''parse a string into a list of a uniform type'''
+    if length is not None and length < 1:
+        raise ValueError("invalid length: {}".format(length));
+    if length == 1:
+        rx = r"\( *{urx} *,{{0,1}} *\)".format(urx=urx);
+    elif length is None:
+        rx = r"\( *(?:{urx} *, *)*{urx} *,{{0,1}} *\)".format(urx=urx);
+    else:
+        rx = r"\( *(?:{urx} *, *){{{rep1}}}{urx} *,{{0,1}} *\)".format(
+            rep1=length-1,
+            urx=urx);
+    return re.match(rx,s);
+
 def parse_numtuple(s,intype,length=2,scale=1):
     '''parse a string into a list of numbers of a type'''
     if intype == int:
@@ -87,21 +104,32 @@ def parse_numtuple(s,intype,length=2,scale=1):
     else:
         raise NotImplementedError("Not implemented for type: {}".format(
             intype));
-        
-    if length is not None and length < 1:
-        raise ValueError("invalid length: {}".format(length));
-    if length == 1:
-        rx = r"\( *{numrx} *,{{0,1}} *\)".format(numrx=numrx);
-    elif length is None:
-        rx = r"\( *(?:{numrx} *, *)*{numrx} *,{{0,1}} *\)".format(
-            numrx=numrx);
-    else:
-        rx = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
-            rep1=length-1,
-            numrx=numrx);
-    if re.match(rx,s) is None:
-        raise ValueError("{} does not match \"{}\".".format(s,rx));
+    if parse_utuple(s, numrx, length=length) is None:
+        raise ValueError("{} is not a valid number tuple.".format(s));
     return [x*scale for x in eval(s)];
+
+def quote_subs(s, rx=srx):
+    return re.sub(rx,'"\g<0>"',s);
+
+def parse_ctuple(s,length=2):
+    '''parse a string of acceptable colors into matplotlib, that is, either
+       strings, or three tuples of rgb. Don't quote strings'''
+    rgbrx_s = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
+        rep1=2,
+        numrx=fltrx_s);
+    crx = r"(?:{srx}|{rgbrx})".format(srx=srx_s,rgbrx=rgbrx_s);
+    if parse_utuple(s, crx, length=length) is None:
+        raise ValueError("{} is not a valid color tuple.".format(s));
+    #quote strings
+    s=quote_subs(s);
+    return eval(s);
+
+def parse_stuple(s,length=2):
+    '''parse a string of strings. Don't quote strings'''
+    if parse_utuple(s, srx_s, length=length) is None:
+        raise ValueError("{} is not a valid string tuple.".format(s));
+    s = quote_subs(s);
+    return eval(s);
 
 def parse_ftuple(s,length=2,scale=1):
     '''parse a string into a list of floats'''
