@@ -80,6 +80,10 @@ intrx_s=r"[-+]{0,1}\d+";
 intrx=re.compile(intrx_s);
 srx_s = r'[0-9]*[a-zA-Z_]+[\w ]*';
 srx=re.compile(srx_s);
+rgbrx_s = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
+    rep1=2,
+    numrx=fltrx_s);
+
 
 def parse_utuple(s,urx,length=2):
     '''parse a string into a list of a uniform type'''
@@ -114,9 +118,6 @@ def quote_subs(s, rx=srx):
 def parse_ctuple(s,length=2):
     '''parse a string of acceptable colors into matplotlib, that is, either
        strings, or three tuples of rgb. Don't quote strings'''
-    rgbrx_s = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
-        rep1=2,
-        numrx=fltrx_s);
     crx = r"(?:{srx}|{rgbrx})".format(srx=srx_s,rgbrx=rgbrx_s);
     if parse_utuple(s, crx, length=length) is None:
         raise ValueError("{} is not a valid color tuple.".format(s));
