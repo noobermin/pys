@@ -49,7 +49,7 @@ def chunks(l,n):
     '''chunk l in n sized bits'''
     #http://stackoverflow.com/a/3226719
     #...not that this is hard to understand.
-    return [l[x:x+n] for x in xrange(0, len(l), n)];
+    return [l[x:x+n] for x in range(0, len(l), n)];
 
 def check_vprint(s, vprinter):
     '''checked verbose printing'''
