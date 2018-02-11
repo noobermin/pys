@@ -89,17 +89,23 @@ colrx=re.compile(colrx_s);
 
 def parse_utuple(s,urx,length=2):
     '''parse a string into a list of a uniform type'''
+    if type(urx) != str:
+        urx=urx.pattern;
     if length is not None and length < 1:
         raise ValueError("invalid length: {}".format(length));
     if length == 1:
-        rx = r"\( *{urx} *,? *\)".format(urx=urx);
+        rx = r"^ *\( *{urx} *,? *\) *$".format(urx=urx);
     elif length is None:
-        rx = r"\( *(?:{urx} *, *)*{urx} *,? *\)".format(urx=urx);
+        rx = r"^ *\( *(?:{urx} *, *)*{urx} *,? *\) *$".format(urx=urx);
     else:
-        rx = r"\( *(?:{urx} *, *){{{rep1}}}{urx} *,? *\)".format(
+        rx = r"^ *\( *(?:{urx} *, *){{{rep1}}}{urx} *,? *\) *$".format(
             rep1=length-1,
             urx=urx);
     return re.match(rx,s);
+
+def evalt(s):
+    '''a "save" eval for a tuple by adding a comma to the end'''
+    return eval(re.sub("(\) *$)",",\g<1>",s));
 
 def parse_numtuple(s,intype,length=2,scale=1):
     '''parse a string into a list of numbers of a type'''
@@ -112,7 +118,7 @@ def parse_numtuple(s,intype,length=2,scale=1):
             intype));
     if parse_utuple(s, numrx, length=length) is None:
         raise ValueError("{} is not a valid number tuple.".format(s));
-    return [x*scale for x in eval(s)];
+    return [x*scale for x in evalt(s)];
 
 def quote_subs(s, rx=isrx, colorfix=False):
     if colorfix:
@@ -129,14 +135,14 @@ def parse_ctuple(s,length=2):
         raise ValueError("{} is not a valid color tuple.".format(s));
     #quote strings
     s=quote_subs(s,colorfix=True);
-    return eval(s);
+    return evalt(s);
 
 def parse_stuple(s,length=2):
     '''parse a string of strings. Don't quote strings'''
     if parse_utuple(s, srx_s, length=length) is None:
         raise ValueError("{} is not a valid string tuple.".format(s));
     s = quote_subs(s);
-    return eval(s);
+    return evalt(s);
 
 def parse_ftuple(s,length=2,scale=1):
     '''parse a string into a list of floats'''
@@ -145,6 +151,52 @@ def parse_ftuple(s,length=2,scale=1):
 def parse_ituple(s,length=2,scale=1):
     '''parse a string into a list of floats'''
     return parse_numtuple(s,int,length,scale);
+
+def parse_colors(s, length=1):
+    '''helper for parsing a string that can be either a matplotlib
+       color or be a tuple of colors. Returns a tuple of them either
+       way.
+    '''
+    if length and length > 1:
+        return parse_ctuple(s,length=length);
+    if re.match('^ *{} *$'.format(isrx_s), s):
+        #it's just a string.
+        return [s];
+    elif re.match('^ *{} *$'.format(rgbrx_s), s):
+        return [eval(s)];
+    else:
+        return parse_ctuple(s,length=length);
+    
+
+
+def parse_qs(s, rx, parsef=None, length=2, quote=False):
+    '''helper for parsing a string that can both rx or parsef
+       which is obstensibly the parsef for rx.
+
+       Use parse colors for color tuples. This won't work with
+       those.
+    '''
+    if type(rx) != str:
+        rx = rx.pattern;
+    if re.match(" *\(.*\)", s):
+        if not parsef:
+            if parse_utuple(s,rx,length=length):
+                if quote:
+                    s=quote_subs(s);
+                return evalt(s);
+            else:
+                raise ValueError("{} did is not a valid tuple of {}".format(
+                    s, rx));
+        else:
+            return parsef(s,length=length);
+    elif re.match('^ *{} *$'.format(rx), s):
+        if quote:
+            return eval('["{}"]'.format(s));
+        return eval('[{}]'.format(s));
+    else:
+        raise ValueError("{} does not match '{}' or the passed parsef".format(
+            s,rx));
+    
 
 def sd(d,**kw):
     '''
