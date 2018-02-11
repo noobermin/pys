@@ -78,23 +78,25 @@ fltrx_s=r"[-+]{0,1}\d+\.{0,1}\d*(?:[eE][-+]{0,1}\d+){0,1}";
 fltrx=re.compile(fltrx_s);
 intrx_s=r"[-+]{0,1}\d+";
 intrx=re.compile(intrx_s);
-srx_s = r'[0-9]*[a-zA-Z_]+[\w ]*';
-srx=re.compile(srx_s);
+#i for identifier string. Must start with alpha+underscore.
+isrx_s = r'[a-zA-Z_]+[\w ]*';
+isrx=re.compile(isrx_s);
 rgbrx_s = r"\( *(?:{numrx} *, *){{{rep1}}}{numrx} *,{{0,1}} *\)".format(
     rep1=2,
     numrx=fltrx_s);
-
+colrx_s = r"(?:{isrx}|{rgbrx})".format(isrx=isrx_s,rgbrx=rgbrx_s);
+colrx=re.compile(colrx_s);
 
 def parse_utuple(s,urx,length=2):
     '''parse a string into a list of a uniform type'''
     if length is not None and length < 1:
         raise ValueError("invalid length: {}".format(length));
     if length == 1:
-        rx = r"\( *{urx} *,{{0,1}} *\)".format(urx=urx);
+        rx = r"\( *{urx} *,? *\)".format(urx=urx);
     elif length is None:
-        rx = r"\( *(?:{urx} *, *)*{urx} *,{{0,1}} *\)".format(urx=urx);
+        rx = r"\( *(?:{urx} *, *)*{urx} *,? *\)".format(urx=urx);
     else:
-        rx = r"\( *(?:{urx} *, *){{{rep1}}}{urx} *,{{0,1}} *\)".format(
+        rx = r"\( *(?:{urx} *, *){{{rep1}}}{urx} *,? *\)".format(
             rep1=length-1,
             urx=urx);
     return re.match(rx,s);
@@ -112,17 +114,21 @@ def parse_numtuple(s,intype,length=2,scale=1):
         raise ValueError("{} is not a valid number tuple.".format(s));
     return [x*scale for x in eval(s)];
 
-def quote_subs(s, rx=srx):
+def quote_subs(s, rx=isrx, colorfix=False):
+    if colorfix:
+        if type(rx) != str:
+            rx = rx.pattern;
+        return re.sub("(\(|,) *({})".format(rx), '\g<1> "\g<2>"', s);
     return re.sub(rx,'"\g<0>"',s);
 
 def parse_ctuple(s,length=2):
     '''parse a string of acceptable colors into matplotlib, that is, either
-       strings, or three tuples of rgb. Don't quote strings'''
-    crx = r"(?:{srx}|{rgbrx})".format(srx=srx_s,rgbrx=rgbrx_s);
-    if parse_utuple(s, crx, length=length) is None:
+       strings, or three tuples of rgb. Don't quote strings.
+    '''
+    if parse_utuple(s, colrx_s, length=length) is None:
         raise ValueError("{} is not a valid color tuple.".format(s));
     #quote strings
-    s=quote_subs(s);
+    s=quote_subs(s,colorfix=True);
     return eval(s);
 
 def parse_stuple(s,length=2):
