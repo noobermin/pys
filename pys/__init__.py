@@ -139,7 +139,7 @@ def parse_ctuple(s,length=2):
 
 def parse_stuple(s,length=2):
     '''parse a string of strings. Don't quote strings'''
-    if parse_utuple(s, srx_s, length=length) is None:
+    if parse_utuple(s, isrx_s, length=length) is None:
         raise ValueError("{} is not a valid string tuple.".format(s));
     s = quote_subs(s);
     return evalt(s);
