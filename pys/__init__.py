@@ -166,8 +166,6 @@ def parse_colors(s, length=1):
         return [eval(s)];
     else:
         return parse_ctuple(s,length=length);
-    
-
 
 def parse_qs(s, rx, parsef=None, length=2, quote=False):
     '''helper for parsing a string that can both rx or parsef
@@ -238,8 +236,10 @@ def take(d,l):
     '''take a list of keys from a dict'''
     return {i:d[i] for i in l};
 
-def destr(d,l):
+def destr(d,*l):
     '''destructure a dict (like take, but return a list)'''
+    if type(l[0]) is not str:
+        l=l[0];
     return [d[i] for i in l];
 
 def takef(d,l,val=None):
