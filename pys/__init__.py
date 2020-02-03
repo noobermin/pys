@@ -232,8 +232,10 @@ def readtxt(fname):
         s = f.read();
     return s;
 
-def take(d,l):
+def take(d,*l):
     '''take a list of keys from a dict'''
+    if type(l[0]) is not str:
+        l = l[0];
     return {i:d[i] for i in l};
 
 def destr(d,*l):
@@ -242,8 +244,10 @@ def destr(d,*l):
         l=l[0];
     return [d[i] for i in l];
 
-def takef(d,l,val=None):
+def takef(d,*l,val=None):
     '''take(f) a list of keys and fill in others with val'''
+    if type(l[0]) is not str:
+        l=l[0];    
     return {i:(d[i] if i in d else val)
             for i in l};
 
