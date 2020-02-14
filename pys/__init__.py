@@ -286,3 +286,31 @@ def mk_getkw(kw, defaults,prefer_passed=False):
 
             
 
+from time import perf_counter;
+class TimestampVprinter():
+    '''
+    vprinter with a timestamp
+    
+    '''
+    def __init__(self, preamble='',tabnum=2,timefmt='{:06.2f}'):
+        self.pref = '{}{}:\n{}'.format(preamble,timefmt,' '*tabnum);
+        self.starttime = perf_counter();
+    def __call__(self, *arg):
+        print(self.pref.format(perf_counter() - self.starttime),*arg);
+
+def autovp(*arg):
+    '''
+    make a vprinter with the preamble of exectable name.
+    '''
+    import sys;
+    preamble=' '.join((sys.argv[0],)+arg)+' '
+    return TimestampVprinter(preamble=preamble);
+
+def novp(*avg):
+    ''' what do you think '''
+    pass;
+
+def choose_autovp(choose, *avg):
+    '''call autovp based on choose'''
+    if choose: return autovp(*avg);
+    return novp;
