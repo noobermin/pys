@@ -314,3 +314,7 @@ def choose_autovp(choose, *avg):
     '''call autovp based on choose'''
     if choose: return autovp(*avg);
     return novp;
+
+def sdl(l,**kw):
+    '''apply sd to a list l of dictionaries'''
+    return [sd(i,**kw) for i in l];
