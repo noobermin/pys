@@ -221,14 +221,16 @@ def sd(d,**kw):
     r.update(kw);
     return r;
 
-def savetxt(fname, s=""):
+def savetxt(fname, s="",bin=False):
     '''write to a text file'''
-    with open(fname,"wb") as f:
+    mode = 'wb' if bin else 'w'
+    with open(fname,mode) as f:
         f.write(s);
 
-def readtxt(fname):
+def readtxt(fname,bin=False):
     '''read a text file'''
-    with open(fname,"rb") as f:
+    mode = 'rb' if bin else 'r'
+    with open(fname,mode) as f:
         s = f.read();
     return s;
 
