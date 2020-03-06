@@ -138,7 +138,8 @@ def parse_ctuple(s,length=2):
     return evalt(s);
 
 def parse_stuple(s,length=2):
-    '''parse a string of strings. Don't quote strings'''
+    '''parse a string of identifier strings, must start with alpha or underscore.
+       Don't quote strings'''
     if parse_utuple(s, isrx_s, length=length) is None:
         raise ValueError("{} is not a valid string tuple.".format(s));
     s = quote_subs(s);
