@@ -254,6 +254,24 @@ def takef(d,*l,val=None):
     return {i:(d[i] if i in d else val)
             for i in l};
 
+def stridesf(l,N,fill=[]):
+    '''
+    return list `l` divided into `N` parts by striding. If `N` exceeds
+    len(l), then return `fill` for each extra slot.
+
+    basically,
+        stridesf([1,2,3,4],2)   -> [[1,3],[2,4]]
+        stridesf([1,2,3,4],5)   -> [[1],[2],[3],[4],[]]
+        stridesf(
+            [1,2,3,4],5,fill='wowza')  -> [[1],[2],[3],[4],'wowza']
+    '''
+    if len(l) < N:
+        l = [[i] for i in l] +  [fill]*(N-len(l));
+    else:
+        l = [ l[i::N] for i in range(N) ];
+    return l;
+
+
 def mk_getkw(kw, defaults,prefer_passed=False):
     '''
     a helper for generating a function for reading keywords in
@@ -266,7 +284,7 @@ def mk_getkw(kw, defaults,prefer_passed=False):
     def bigfunc(**kw):
         getkw=mk_getkw(kw,defaults);
 
-        # I want the callers' `a', or the default if s/he doesn't
+        # I want the callers' `a', or the default if they don't
         # supply it
         a=getkw('a');
         c = [a]*getkw('b');
