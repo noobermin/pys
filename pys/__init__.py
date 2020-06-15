@@ -51,6 +51,17 @@ def chunks(l,n):
     #...not that this is hard to understand.
     return [l[x:x+n] for x in range(0, len(l), n)];
 
+def subdiv(l,n):
+    '''chunk l in n sized bits'''
+    #http://stackoverflow.com/a/3226719
+    #...not that this is hard to understand.
+    sz   = len(l) // n;
+    ret = [ l[i:i+sz] for i in range(0, sz*(n-1), sz) ];
+    ret += [ l[sz*(n-1):] ];
+    return ret;
+
+
+
 def check_vprint(s, vprinter):
     '''checked verbose printing'''
     if vprinter is True:
